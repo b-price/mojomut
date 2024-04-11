@@ -1,9 +1,11 @@
 import os
 import random
 import re
-import shutil
 import subprocess
 import argparse
+
+mutant_amount = 10
+binary_operators = ('+', '-', '*', '/', '%')
 
 
 def find_op_position(line):
@@ -12,9 +14,6 @@ def find_op_position(line):
     op_position[1] = op_position[1] - 3
     return op_position
 
-
-mutant_amount = 10
-binary_operators = ('+', '-', '*', '/', '%', '**', '//')
 
 parser = argparse.ArgumentParser(description='mojo-parse')
 parser.add_argument('filepath', help='mojo file to parse')
@@ -44,6 +43,11 @@ print(mutated)
 
 for idx, pos in enumerate(op_positions):
     mutated_line = mutated[pos[0]]
+    while mutated_line[pos[1]] not in binary_operators:
+        pos[1] -= 1
+        if pos[1] < 0:
+            break
+
     mutated_line = mutated_line[:pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
     mutated[pos[0]] = mutated_line
 
@@ -51,17 +55,4 @@ print(mutated)
 
 with open(mutant_path, 'w') as file:
     file.writelines(mutated)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
