@@ -4,8 +4,7 @@ import re
 import subprocess
 import argparse
 
-mutant_amount = 10
-binary_operators = ('+', '-', '*', '/', '%')
+BINARY_OPERATORS = ('+', '-', '*', '/', '%')
 
 
 def find_op_position(line):
@@ -21,38 +20,37 @@ filepath = parser.parse_args().filepath
 os.makedirs('mutants', exist_ok=True)
 
 result = subprocess.run(["npx", "tree-sitter", "parse", filepath], stdout=subprocess.PIPE)
-stringout = result.stdout.decode("utf-8")
+string_out = result.stdout.decode("utf-8")
 
 mutant = "binary_operator"
 
-arithmetic_operators = [line for line in stringout.splitlines() if mutant in line]
+arithmetic_operators = [line for line in string_out.splitlines() if mutant in line]
 
 op_positions = [find_op_position(line) for line in arithmetic_operators]
 mutant_ops = []
 
 for op_position in op_positions:
-    mutant_ops.append(random.choice(binary_operators))
+    mutant_ops.append(random.choice(BINARY_OPERATORS))
 
 print(op_positions)
 
-mutant_path = 'mutants/mutant.mojo'
 with open(filepath, 'r') as file:
-    mutated = file.readlines()
+    original = file.readlines()
 
+mutated = original
 print(mutated)
 
 for idx, pos in enumerate(op_positions):
     mutated_line = mutated[pos[0]]
-    while mutated_line[pos[1]] not in binary_operators:
+    while mutated_line[pos[1]] not in BINARY_OPERATORS:
         pos[1] -= 1
         if pos[1] < 0:
             break
 
     mutated_line = mutated_line[:pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
     mutated[pos[0]] = mutated_line
+    with open('mutants/mutant_' + str(idx) + '.mojo', 'w') as file:
+        file.writelines(mutated)
+    mutated[pos[0]] = original[pos[0]]
 
 print(mutated)
-
-with open(mutant_path, 'w') as file:
-    file.writelines(mutated)
-
