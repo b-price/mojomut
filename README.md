@@ -5,7 +5,7 @@ Currently generates arithmetic mutants.
 
 To run:
 
-- Install [tree-sitter] 
+- Install [tree-sitter]: ```npm install tree-sitter-cli```
 - Clone [tree-sitter-mojo]
 - Run ```npx tree-sitter init-config```
 - Edit the config.json file you just created so that tree-sitter-mojo directory is in one of the directories listed
