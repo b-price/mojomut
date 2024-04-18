@@ -5,6 +5,7 @@ import subprocess
 import argparse
 
 BINARY_OPERATORS = ('+', '-', '*', '/', '%')
+COMPARISON_OPERATORS = ('<', '>', '<=', '>=', '==', '!=', 'and', 'or')
 
 
 # function to find position of operator in a line of the generated tree
@@ -50,7 +51,7 @@ with open(filepath, 'r') as file:
     original = file.readlines()
 
 # makes a copy of the file contents to mutate
-mutated = original
+mutated = original.copy()
 
 # generates a mutant source code file for each mutant operator
 for idx, pos in enumerate(op_positions):
@@ -64,8 +65,10 @@ for idx, pos in enumerate(op_positions):
     mutated_line = mutated_line[:pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
     mutated[pos[0]] = mutated_line
     # writes the mutant file
-    with open('mutants/mutant_' + str(idx) + '.mojo', 'w') as file:
+    with open('mutants/mutant_' + str(idx) + '.🔥', 'w') as file:
         file.writelines(mutated)
 
     # resets current mutant operator
     mutated[pos[0]] = original[pos[0]]
+    print("mutant " + str(idx) + " generated")
+

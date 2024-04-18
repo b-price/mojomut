@@ -1,0 +1,30 @@
+fn main():
+    var a: Int = 1
+    var b: Int = 2
+    var c: Int = 4
+    var d: Int = 8
+    var e: Int = 16
+    var f: Int = -4
+    var g: Bool = False
+    var h: Bool = True
+
+    if a > b:
+        a = b
+
+    if b == c:
+        a = c
+
+    if a >= b:
+        a = b
+
+    if b != f:
+        a = c
+
+    if d < b:
+        a = b
+
+    if g and h:
+        a = c
+
+    if h or g:
+        a = e
