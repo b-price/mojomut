@@ -5,12 +5,11 @@ import subprocess
 import argparse
 
 BINARY_OPERATORS = ('+', '-', '*', '/', '%', '**', '//')
-COMPARISON_OPERATORS = ('<', '>', '<=', '>=', '==', '!=', 'and', 'or')
 
 
 # function to find position of operator in a line of the generated tree
 # uses the last two numbers of the line to calculate the position
-# this only works for single-digit numbers lol
+# this only works for single-digit numbers lol, handled in for loop
 def find_op_position(line):
     numbers = re.findall(r'\d+', line)
     op_position = [int(num) for num in numbers][-2:]
@@ -58,21 +57,26 @@ mutated = original.copy()
 for idx, pos in enumerate(op_positions):
     is2CharOp = False
     mutated_line = mutated[pos[0]]
-    # in the case of >1 digit number operands, finds the operator
+
+    # handles 2-character operators
     if mutated_line[pos[1] - 1] in BINARY_OPERATORS:
         is2CharOp = True
+
+    # handles >1-digit operands
     while mutated_line[pos[1]] not in BINARY_OPERATORS:
         pos[1] -= 1
         if pos[1] < 0:
             break
 
+    # swaps in the mutant operator
     mutated_line = mutated_line[:pos[1] - 1 if is2CharOp else pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
     mutated[pos[0]] = mutated_line
+
     # writes the mutant file
-    with open('mutants/mutant_' + str(idx) + '.🔥', 'w') as file:
+    with open('mutants/arith_mutant_' + str(idx) + '.🔥', 'w') as file:
         file.writelines(mutated)
 
     # resets current mutant operator
     mutated[pos[0]] = original[pos[0]]
-    print("mutant " + str(idx) + " generated")
+    print("arithmetic mutant " + str(idx) + " generated")
 

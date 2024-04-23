@@ -1,0 +1,6 @@
+var a: Bool = True
+var b: Bool = False
+var c: Bool = a << 1
+var d: Bool = b & a
+var e: Bool = a | c
+var f: Bool = a ^ c
