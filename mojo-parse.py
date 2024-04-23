@@ -4,7 +4,7 @@ import re
 import subprocess
 import argparse
 
-BINARY_OPERATORS = ('+', '-', '*', '/', '%')
+BINARY_OPERATORS = ('+', '-', '*', '/', '%', '**', '//')
 COMPARISON_OPERATORS = ('<', '>', '<=', '>=', '==', '!=', 'and', 'or')
 
 
@@ -53,16 +53,20 @@ with open(filepath, 'r') as file:
 # makes a copy of the file contents to mutate
 mutated = original.copy()
 
+
 # generates a mutant source code file for each mutant operator
 for idx, pos in enumerate(op_positions):
+    is2CharOp = False
     mutated_line = mutated[pos[0]]
     # in the case of >1 digit number operands, finds the operator
+    if mutated_line[pos[1] - 1] in BINARY_OPERATORS:
+        is2CharOp = True
     while mutated_line[pos[1]] not in BINARY_OPERATORS:
         pos[1] -= 1
         if pos[1] < 0:
             break
 
-    mutated_line = mutated_line[:pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
+    mutated_line = mutated_line[:pos[1] - 1 if is2CharOp else pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
     mutated[pos[0]] = mutated_line
     # writes the mutant file
     with open('mutants/mutant_' + str(idx) + '.🔥', 'w') as file:
