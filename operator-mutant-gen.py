@@ -4,15 +4,21 @@ import re
 import subprocess
 import argparse
 
+# these three should work
 binary_operators = ('+', '-', '*', '/', '%', '**', '//')
 comparison_operators = ('<', '>', '<=', '>=', '==', '!=')
 boolean_operators = ('and', 'or')
+
+# not sure if these are implemented in mojo
+# a potential issue is that tree-sitter-mojo considers bitwise operators binary operators
 identity_operators = ('is', 'is not')
-membership_operators = ('in', 'not in')
 bitwise_operators = ('&', '|', '^', '<<', '>>')
+
+# valid arguments
 operator_types = ('boolean', 'binary', 'comparison', 'all')
 
 
+# function to validate arguments
 def checker(arg):
     for a in arg:
         if a not in operator_types:
@@ -38,9 +44,9 @@ parser.add_argument('mutant_types', nargs='+',
                     help='valid mutant types (1 or more): all, binary, comparison, boolean')
 filepath = parser.parse_args().filepath
 mutant_types = parser.parse_args().mutant_types
-
 checker(mutant_types)
 
+# handles 'all'
 if 'all' in mutant_types:
     mutant_types = ['binary', 'comparison', 'boolean']
 
@@ -52,12 +58,13 @@ os.makedirs('mutants', exist_ok=True)
 result = subprocess.run(["npx", "tree-sitter", "parse", filepath], stdout=subprocess.PIPE)
 string_out = result.stdout.decode("utf-8")
 
+# generates mutants for each op type requested
 for mutant_type in mutant_types:
 
-    # the kind of expression to mutate, boolean comparison ops in this case
+    # the key to match operator type in tree
     mutant = mutant_type + "_operator"
 
-    # defines which operator list to look in
+    # defines which operator list to reference
     match mutant_type:
         case 'binary': operators = binary_operators
         case 'comparison': operators = comparison_operators
@@ -121,6 +128,6 @@ for mutant_type in mutant_types:
         with open(f'mutants/{mutant_type}_mutant_{str(idx)}.🔥', 'w') as file:
             file.writelines(mutated)
 
-        # resets current mutant operator
+        # resets current mutant operator for the next mutant file
         mutated[pos[0]] = original[pos[0]]
         print(f"{mutant_type} mutant {str(idx)} generated")
