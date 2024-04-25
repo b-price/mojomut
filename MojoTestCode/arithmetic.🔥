@@ -49,12 +49,12 @@ fn math5(x: Int, y: Int) -> Int:
 
 fn math6(x: Int, y: Int) -> Int:
     var z: Int = x // y
-    if x >= 3:
+    if x >= 3 or y == 9:
         z = x // 3
     return z
 
 fn math7(x: Int, y: Int) -> Int:
     var z: Int = x + y * 3 - (x + 8) - 1
-    if x >= 3:
+    if x >= 3 and y != 2:
         z = x * 3
     return z
