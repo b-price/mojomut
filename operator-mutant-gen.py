@@ -9,7 +9,38 @@ binary_operators = ('+', '-', '*', '/', '%', '**', '//')
 comparison_operators = ('<', '>', '<=', '>=', '==', '!=')
 boolean_operators = ('and', 'or')
 
+# how to mutate operators
+binary_mutants = {
+    '+': '-',
+    '-': '+',
+    '*': '/',
+    '/': '*',
+    '//': '*',
+    '%': '/',
+    '**': '*'
+}
+comparison_mutants = {
+    '<': '<=',
+    '<=': '<',
+    '>': '>=',
+    '>=': '>',
+    '==': '!=',
+    '!=': '=='
+}
+boolean_mutants = {
+    'and': 'or',
+    'or': 'and'
+}
+unary_mutants = {
+    '+': '-',
+    '-': '+'
+}
+not_mutants = {
+    'not': ''
+}
+
 # not working
+assignment_operators = ('=', '+=', '-=', '*=', '/=', '%=', '**=', '//=')
 unary_operators = ('+', '-')
 not_operators = ('not')
 
@@ -52,7 +83,7 @@ checker(mutant_types)
 
 # handles 'all'
 if 'all' in mutant_types:
-    mutant_types = ['binary', 'comparison', 'boolean',]
+    mutant_types = ['binary', 'comparison', 'boolean']
 
 # handles 'unary'
 if 'unary' in mutant_types:
@@ -70,16 +101,32 @@ string_out = result.stdout.decode("utf-8")
 for mutant_type in mutant_types:
 
     # the key to match operator type in tree
-    mutant = mutant_type + "_operator"
+    if mutant_type != 'assignment':
+        mutant = mutant_type + "_operator"
+    else:
+        mutant = 'assignment'
 
-    # defines which operator list to reference
+    # defines which operator/mutant list to reference
     match mutant_type:
-        case 'binary': operators = binary_operators
-        case 'comparison': operators = comparison_operators
-        case 'boolean': operators = boolean_operators
-        case 'unary': operators = unary_operators
-        case 'not': operators = not_operators
-        case _: operators = ()
+        case 'binary':
+            operators = binary_operators
+            mutants = binary_mutants
+        case 'comparison':
+            operators = comparison_operators
+            mutants = comparison_mutants
+        case 'boolean':
+            operators = boolean_operators
+            mutants = boolean_mutants
+        case 'unary':
+            operators = unary_operators
+            mutants = unary_mutants
+        case 'not':
+            operators = not_operators
+            mutants = not_mutants
+        # case 'assignment': operators = assignment_operators
+        case _:
+            operators = ()
+            mutants = {}
 
     # finds lines with operators in the tree
     op_lines = [line for line in string_out.splitlines() if mutant in line]
@@ -87,11 +134,6 @@ for mutant_type in mutant_types:
     # get the op positions from lines w/operators
     op_positions = [find_op_position(line) for line in op_lines]
     mutant_ops = []
-
-    # creates a mutant operator for each operator found
-    # this is done randomly but should probably be smarter
-    for op_position in op_positions:
-        mutant_ops.append(random.choice(operators))
 
     # opens and reads original source code file
     with open(filepath, 'r') as file:
@@ -115,21 +157,27 @@ for mutant_type in mutant_types:
             if pos[1] < 0:
                 break
 
+        mutant_current = mutated_line[pos[1]]
+
         # handles 2-character operators
         if mutated_line[pos[1] - 1] + mutated_line[pos[1]] in operators:
             is2CharOp = True
+            mutant_current = mutated_line[pos[1] - 1] + mutated_line[pos[1]]
 
         # handles 3-character operators ('and')
         if mutated_line[pos[1] - 2] + mutated_line[pos[1] - 1] + mutated_line[pos[1]] in operators:
             is3CharOp = True
+            mutant_current = mutated_line[pos[1] - 2] + mutated_line[pos[1] - 1] + mutated_line[pos[1]]
 
+        # decides which mutant to generate
+        mutant_current = mutants.get(mutant_current)
         # swaps in the mutant operator
         if is2CharOp:
-            mutated_line = mutated_line[:pos[1] - 1] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
+            mutated_line = mutated_line[:pos[1] - 1] + mutant_current + mutated_line[pos[1] + 1:]
         elif is3CharOp:
-            mutated_line = mutated_line[:pos[1] - 2] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
+            mutated_line = mutated_line[:pos[1] - 2] + mutant_current + mutated_line[pos[1] + 1:]
         else:
-            mutated_line = mutated_line[:pos[1]] + mutant_ops[idx] + mutated_line[pos[1] + 1:]
+            mutated_line = mutated_line[:pos[1]] + mutant_current + mutated_line[pos[1] + 1:]
 
         # swaps in the mutated line
         mutated[pos[0]] = mutated_line
