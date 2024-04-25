@@ -1,5 +1,4 @@
 import os
-import random
 import re
 import subprocess
 import argparse
@@ -8,6 +7,8 @@ import argparse
 binary_operators = ('+', '-', '*', '/', '%', '**', '//')
 comparison_operators = ('<', '>', '<=', '>=', '==', '!=')
 boolean_operators = ('and', 'or')
+unary_operators = ('+', '-')
+not_operators = ('not')
 
 # how to mutate operators
 binary_mutants = {
@@ -41,8 +42,6 @@ not_mutants = {
 
 # not working
 assignment_operators = ('=', '+=', '-=', '*=', '/=', '%=', '**=', '//=')
-unary_operators = ('+', '-')
-not_operators = ('not')
 
 # not sure if these are implemented in mojo
 # a potential issue is that tree-sitter-mojo considers bitwise operators binary operators
@@ -58,7 +57,7 @@ def checker(arg):
     for a in arg:
         if a not in operator_types:
             raise argparse.ArgumentTypeError(f'{a} is not a valid operator\n'
-                                             f' Valid: boolean, binary, comparison, all')
+                                             f' Valid: boolean, binary, comparison, unary, all')
     return
 
 
@@ -68,7 +67,7 @@ def checker(arg):
 def find_op_position(line):
     numbers = re.findall(r'\d+', line)
     op_position = [int(num) for num in numbers][-2:]
-    op_position[1] = op_position[1] - 3
+    op_position[1] = op_position[1] - 2
     return op_position
 
 
@@ -83,7 +82,7 @@ checker(mutant_types)
 
 # handles 'all'
 if 'all' in mutant_types:
-    mutant_types = ['binary', 'comparison', 'boolean']
+    mutant_types = ['binary', 'comparison', 'boolean', 'unary', 'not']
 
 # handles 'unary'
 if 'unary' in mutant_types:
@@ -166,6 +165,7 @@ for mutant_type in mutant_types:
 
         # handles 3-character operators ('and')
         if mutated_line[pos[1] - 2] + mutated_line[pos[1] - 1] + mutated_line[pos[1]] in operators:
+            is2CharOp = False
             is3CharOp = True
             mutant_current = mutated_line[pos[1] - 2] + mutated_line[pos[1] - 1] + mutated_line[pos[1]]
 
