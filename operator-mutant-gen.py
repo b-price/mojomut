@@ -9,13 +9,17 @@ binary_operators = ('+', '-', '*', '/', '%', '**', '//')
 comparison_operators = ('<', '>', '<=', '>=', '==', '!=')
 boolean_operators = ('and', 'or')
 
+# not working
+unary_operators = ('+', '-')
+not_operators = ('not')
+
 # not sure if these are implemented in mojo
 # a potential issue is that tree-sitter-mojo considers bitwise operators binary operators
 identity_operators = ('is', 'is not')
 bitwise_operators = ('&', '|', '^', '<<', '>>')
 
 # valid arguments
-operator_types = ('boolean', 'binary', 'comparison', 'all')
+operator_types = ('boolean', 'binary', 'comparison', 'all', 'unary')
 
 
 # function to validate arguments
@@ -48,7 +52,11 @@ checker(mutant_types)
 
 # handles 'all'
 if 'all' in mutant_types:
-    mutant_types = ['binary', 'comparison', 'boolean']
+    mutant_types = ['binary', 'comparison', 'boolean',]
+
+# handles 'unary'
+if 'unary' in mutant_types:
+    mutant_types = mutant_types + ['not']
 
 # make mutant directory
 os.makedirs('mutants', exist_ok=True)
@@ -69,6 +77,8 @@ for mutant_type in mutant_types:
         case 'binary': operators = binary_operators
         case 'comparison': operators = comparison_operators
         case 'boolean': operators = boolean_operators
+        case 'unary': operators = unary_operators
+        case 'not': operators = not_operators
         case _: operators = ()
 
     # finds lines with operators in the tree
