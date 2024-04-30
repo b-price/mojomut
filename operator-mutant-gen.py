@@ -3,7 +3,7 @@ import re
 import subprocess
 import argparse
 
-# these three should work
+# tuples of operators
 binary_operators = ('+', '-', '*', '/', '%', '**', '//')
 comparison_operators = ('<', '>', '<=', '>=', '==', '!=')
 boolean_operators = ('and', 'or')
@@ -49,10 +49,10 @@ identity_operators = ('is', 'is not')
 bitwise_operators = ('&', '|', '^', '<<', '>>')
 
 # valid arguments
-operator_types = ('boolean', 'binary', 'comparison', 'all', 'unary')
+operator_types = ('boolean', 'binary', 'comparison', 'unary', 'all')
 
 
-# function to validate arguments
+# function to cli validate arguments
 def checker(arg):
     for a in arg:
         if a not in operator_types:
@@ -63,7 +63,7 @@ def checker(arg):
 
 # function to find position of operator in a line of the generated tree
 # uses the last two numbers of the line to calculate the position
-# this only works for single-digit numbers lol, handled in for loop
+# this only works for single-digit operands lol, handled in for loop
 def find_op_position(line):
     numbers = re.findall(r'\d+', line)
     op_position = [int(num) for num in numbers][-2:]
@@ -75,7 +75,7 @@ def find_op_position(line):
 parser = argparse.ArgumentParser(description='mojomut-gen')
 parser.add_argument('filepath', help='mojo file to parse')
 parser.add_argument('mutant_types', nargs='+',
-                    help='valid mutant types (1 or more): all, binary, comparison, boolean')
+                    help='valid mutant types (1 or more): all, binary, comparison, unary, boolean')
 filepath = parser.parse_args().filepath
 mutant_types = parser.parse_args().mutant_types
 checker(mutant_types)
