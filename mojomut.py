@@ -53,7 +53,7 @@ bitwise_operators = ('&', '|', '^', '<<', '>>')
 operator_types = ('boolean', 'binary', 'comparison', 'unary', 'all')
 
 
-# function to cli validate arguments
+# function to validate cli arguments
 def checker(arg):
     for a in arg:
         if a not in operator_types:
@@ -95,6 +95,7 @@ mutant_dirs = []
 
 # generates parse tree using tree sitter
 # this will fail if tree-sitter-mojo is not properly installed
+# add npm/npx/whatever package manager that works for you as the first argument if you don't want to use the binary
 result = subprocess.run(["tree-sitter", "parse", filepath], stdout=subprocess.PIPE)
 string_out = result.stdout.decode("utf-8")
 
@@ -198,10 +199,14 @@ for mutant_type in mutant_types:
         mutated[pos[0]] = original[pos[0]]
         print(f"{mutant_type} mutant {str(idx)} generated")
 
+# runs pytest on tests against mutants
 test_result = subprocess.run(["pytest"], stdout=subprocess.PIPE)
 string_output = test_result.stdout.decode("utf-8")
 
+# prints pytest output. probably need to parse this for mutant score/etc
 print(string_output)
 
+# deletes all the mutants
+# change the folder if needed, this should work for vscode ubuntu devcontainer
 for dir in mutant_dirs:
     shutil.rmtree('/workspaces/ubuntu/' + dir)

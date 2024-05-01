@@ -21,6 +21,7 @@ To run mojomut (ubuntu only):
 - Download tree-sitter compiled binary, setup $PATH for /bin/tree-sitter 
 - Or edit mojomut.py to run tree-sitter via npm/npx/etc
 - Have tests in same folder as mojo file you want to mutate
+- Probably need to edit the last line in mojomut.py if you're not in a vscode ubuntu devcontainer
 - Run ```python3 mojomut.py <filepath> [mutant type...]```
 
 [tree-sitter]: https://github.com/tree-sitter/tree-sitter
