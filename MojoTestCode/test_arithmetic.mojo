@@ -3,13 +3,13 @@ from testing import assert_true
 
 fn main() raises:
     print("# test math1")
-    print(test_math1())
+    #print(test_math1())
 
     print("# test math2")
-    print(test_math2())
+    #print(test_math2())
 
     print("# test math3")
-    print(test_math3())
+    #print(test_math3())
 
 fn test_math1() raises:
     let test = math1(5, 5)

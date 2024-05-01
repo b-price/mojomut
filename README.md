@@ -3,7 +3,7 @@ MojoMut 🔥
 A mutation testing tool for Mojo programming language.
 Currently generates arithmetic/boolean/conditional/unary operator mutants. 
 
-To run:
+To run the mutant generator:
 
 - Install [tree-sitter]: ```npm install tree-sitter-cli```
 - Clone [tree-sitter-mojo]
@@ -14,7 +14,18 @@ To run:
 - ```python operator-mutant-gen.py <filepath> [mutant type...]```
 - I'd suggest making run configs in your IDE for the above command
 
+To run mojomut (ubuntu only):
+
+- Have the above dependencies set up
+- Have [pytest] and [pytest-mojo] installed
+- Download tree-sitter compiled binary, setup $PATH for /bin/tree-sitter 
+- Or edit mojomut.py to run tree-sitter via npm/npx/etc
+- Have tests in same folder as mojo file you want to mutate
+- Run ```python3 mojomut.py <filepath> [mutant type...]```
+
 [tree-sitter]: https://github.com/tree-sitter/tree-sitter
 [tree-sitter-mojo]: https://github.com/b-price/tree-sitter-mojo
+[pytest]: https://docs.pytest.org/en/8.2.x/
+[pytest-mojo]: https://github.com/guidorice/mojo-pytest
 
 
