@@ -5,8 +5,9 @@ import argparse
 import shutil
 
 # tuples of operators
-binary_operators = ('+', '-', '*', '/', '%', '**', '//')
-comparison_operators = ('<', '>', '<=', '>=', '==', '!=')
+binary_operators = ('+', '-', '*', '/', '%', '**', '//', '>>', '<<', '^', '&', '|')
+# i don't think 'is not' is correctly mutated
+comparison_operators = ('<', '>', '<=', '>=', '==', '!=', 'is', 'is not')
 boolean_operators = ('and', 'or')
 unary_operators = ('+', '-')
 not_operators = ('not')
@@ -19,7 +20,12 @@ binary_mutants = {
     '/': '*',
     '//': '*',
     '%': '/',
-    '**': '*'
+    '**': '*',
+    '>>': '<<',
+    '<<': '>>',
+    '|': '&',
+    '&': '|',
+    '^': '|'
 }
 comparison_mutants = {
     '<': '<=',
@@ -27,7 +33,9 @@ comparison_mutants = {
     '>': '>=',
     '>=': '>',
     '==': '!=',
-    '!=': '=='
+    '!=': '==',
+    'is': 'is not',
+    'is not': 'is'
 }
 boolean_mutants = {
     'and': 'or',
@@ -43,11 +51,6 @@ not_mutants = {
 
 # not working
 assignment_operators = ('=', '+=', '-=', '*=', '/=', '%=', '**=', '//=')
-
-# not sure if these are implemented in mojo
-# a potential issue is that tree-sitter-mojo considers bitwise operators binary operators
-identity_operators = ('is', 'is not')
-bitwise_operators = ('&', '|', '^', '<<', '>>')
 
 # valid arguments
 operator_types = ('boolean', 'binary', 'comparison', 'unary', 'all')
@@ -166,7 +169,7 @@ for mutant_type in mutant_types:
             is2CharOp = True
             mutant_current = mutated_line[pos[1] - 1] + mutated_line[pos[1]]
 
-        # handles 3-character operators ('and')
+        # handles 3-character operators
         if mutated_line[pos[1] - 2] + mutated_line[pos[1] - 1] + mutated_line[pos[1]] in operators:
             is2CharOp = False
             is3CharOp = True
@@ -209,4 +212,4 @@ print(string_output)
 # deletes all the mutants
 # change the folder if needed, this should work for vscode ubuntu devcontainer
 for dir in mutant_dirs:
-    shutil.rmtree('/workspaces/ubuntu/' + dir)
+    shutil.rmtree('workspaces/ubuntu/' + dir)

@@ -60,3 +60,11 @@ fn math7(x: Int, y: Int) -> Float64:
     elif not(x == 5):
         z = +3
     return z
+
+fn math8(x: Int, y: Int) -> Int:
+    var z: Int = x >> y
+    if x != 7 | y == 9:
+        z = y << x
+    elif y == 21 & x != 55:
+        z = x ^ y
+    return z
