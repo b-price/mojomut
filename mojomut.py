@@ -67,7 +67,7 @@ def checker(arg):
 
 # function to find position of operator in a line of the generated tree
 # uses the last two numbers of the line to calculate the position
-# this only works for single-digit operands lol, handled in for loop
+# this only works for single-digit operands lol, handled below
 def find_op_position(line):
     numbers = re.findall(r'\d+', line)
     op_position = [int(num) for num in numbers][-2:]
@@ -163,6 +163,7 @@ for mutant_type in mutant_types:
                 break
 
         mutant_current = mutated_line[pos[1]]
+        mutant_str_pos = f'{pos[0] + 1}-{pos[1] + 1}'
 
         # handles 2-character operators
         if mutated_line[pos[1] - 1] + mutated_line[pos[1]] in operators:
@@ -189,7 +190,7 @@ for mutant_type in mutant_types:
         mutated[pos[0]] = mutated_line
 
         # makes folder for mutant
-        mutant_folder = f'tests/mojomut_mutant_{mutant_type}_{str(idx)}'
+        mutant_folder = f'tests/mojomut_mutant_{mutant_type}_{mutant_str_pos}'
         os.makedirs(mutant_folder, exist_ok=True)
         mutant_dirs.append(mutant_folder)
         shutil.copyfile(f'test_{filepath}', f'{mutant_folder}/test_{filepath}')
@@ -203,13 +204,64 @@ for mutant_type in mutant_types:
         print(f"{mutant_type} mutant {str(idx)} generated")
 
 # runs pytest on tests against mutants
-test_result = subprocess.run(["pytest"], stdout=subprocess.PIPE)
+test_result = subprocess.run(["pytest", "tests/"], stdout=subprocess.PIPE)
 string_output = test_result.stdout.decode("utf-8")
 
-# prints pytest output. probably need to parse this for mutant score/etc
+# prints pytest output. parsed for mutant info below
 print(string_output)
+
+# this commented out code is for considering each test case rather than each test
+# fail_str = string_output.split('=========================== short test summary info ============================')
+
+# results = [line for line in fail_str[1].splitlines()]
+
+# failpass = [int(i) for i in results[len(results) - 1].split() if i.isdigit()]
+
+# results = results.pop()
+
+# if len(failpass) > 2:
+#     mutation_score = 0
+# else:
+#     mutation_score = failpass[0]/ (failpass[0] + failpass[1])
+
+# print(f'Mutation Score: {mutation_score * 100}%')
+# print(f'Mutants Survived: {failpass[1]}')
+# print(f'Mutants Killed: {failpass[0]}')
+# print('Mutants survived at:')
+# for line in results:
+#     linesplit = line.split(":: ")
+#     print(linesplit[1])
+
+
+# here the mutant score is calculated by number of mutants killed
+# splits pytest output into the lines with results
+split_output = string_output.split('\n\n')
+results = [line for line in split_output[1].splitlines()]
+
+# list of positions of survived mutants, count of killed mutants
+survived = []
+killed = 0
+
+# loop to parse result lines for survivors
+for result in results:
+    result_split = result.split(' ')
+    if 'F' not in result_split[1]:
+        survived.append(re.findall(r'\d+', result_split[0]))
+    else:
+        killed += 1
+
+mutation_score = killed / len(results)
+
+# Mojomut output
+print(f'Mutation Score:     {mutation_score * 100:.2f}%')
+print(f'Mutants Survived:   {len(survived)}')
+print(f'Mutants Killed:     {killed}')
+print('Mutants survived at:')
+for survivor in survived:
+    print(f'Line {survivor[0]}, Column {survivor[1]}')
 
 # deletes all the mutants
 # change the folder if needed, this should work for vscode ubuntu devcontainer
+# ignore_errors prevents a bug where it tries to delete a mutant twice
 for dir in mutant_dirs:
-    shutil.rmtree('workspaces/ubuntu/' + dir)
+    shutil.rmtree('/workspaces/ubuntu/' + dir, ignore_errors=True)

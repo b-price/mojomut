@@ -9,12 +9,14 @@ fn main():
     var o: PythonObject = 4
     var p: PythonObject = 7
 
-    print(math1(a, b))
-    print(math2(c, b))
-    print(math3(c, f))
-    print(math4(d, b))
-    print(math5(c, c))
-    print(math8(b, a))
+    print(math1(-2, 3))
+    print(math2(5, 0))
+    print(math3(3, 0))
+    print(math4(2, -3))
+    print(math5(0, 0))
+    print(math7(5, 2))
+    print(math8(2, 3))
+    print(math9(8, 9))
 
 
 fn math1(x: Int, y: Int) -> Int:
