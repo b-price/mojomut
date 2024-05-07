@@ -261,7 +261,6 @@ for survivor in survived:
     print(f'Line {survivor[0]}, Column {survivor[1]}')
 
 # deletes all the mutants
-# change the folder if needed, this should work for vscode ubuntu devcontainer
 # ignore_errors prevents a bug where it tries to delete a mutant twice
 for dir in mutant_dirs:
-    shutil.rmtree('/workspaces/ubuntu/' + dir, ignore_errors=True)
+    shutil.rmtree(dir, ignore_errors=True)
