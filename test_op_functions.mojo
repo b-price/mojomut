@@ -132,6 +132,11 @@ fn test_math7() raises:
 
     var test5 = math7(2, 5)
     assert_true(test5 == 3.0, "Test failed for math7(2, 5)")
+    #having a weird problem where if i edit any of these test cases, the mutation score jumps to 100%
+    #please try on your own machine, I know Chris said he tried one of these and it gave a diff result
+    
+    # var test6 = math7(-6,9)
+    # assert_true(test6 == 18.0, "Test failed for math7(-6,9)")
 
 fn test_math8() raises:
     print("# test math8")
@@ -149,6 +154,12 @@ fn test_math8() raises:
 
     var test5 = math8(2, 3)
     assert_true(test5 == 0, "Test failed for math8(2, 3)")
+
+    # var test6 = math8(2,-3)
+    # assert_true(test6 == 16, "Test failed for math(-2,3)")
+
+    # var test7 = math8(-2, -3)
+    # assert_true(test5 == 0, "Test failed for math8(-2, -3)")
 
 fn test_math9() raises:
     print("# test math9")
