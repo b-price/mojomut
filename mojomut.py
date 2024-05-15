@@ -292,10 +292,14 @@ results = [line for line in split_output[1].splitlines()]
 # list of positions of survived mutants, count of killed mutants
 survived = []
 killed = 0
+errors = False
 
 # loop to parse result lines for survivors
 for result in results:
     result_split = result.split(' ')
+    if result_split[1] == 'ERRORS' or result_split[1] == 'no':
+        errors = True
+        break
     if 'F' not in result_split[1]:
         survived.append(re.findall(r'\d+', result_split[0]))
     else:
@@ -304,13 +308,16 @@ for result in results:
 mutation_score = killed / len(results)
 
 # Mojomut output
-print(f'Mutation Score:     {mutation_score * 100:.2f}%')
-print(f'Mutants Survived:   {len(survived)}')
-print(f'Mutants Killed:     {killed}')
-if len(survived) > 0:
-    print('Mutants survived at:')
-    for survivor in survived:
-        print(f'Line {survivor[0]}, Column {survivor[1]}')
+if not errors:
+    print(f'Mutation Score:     {mutation_score * 100:.2f}%')
+    print(f'Mutants Survived:   {len(survived)}')
+    print(f'Mutants Killed:     {killed}')
+    if len(survived) > 0:
+        print('Mutants survived at:')
+        for survivor in survived:
+            print(f'Line {survivor[0]}, Column {survivor[1]}')
+else:
+    print('Pytest Error!')
 
 # deletes all the mutants
 # ignore_errors prevents a bug where it tries to delete a mutant twice
