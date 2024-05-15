@@ -307,7 +307,7 @@ mutation_score = killed / len(results)
 print(f'Mutation Score:     {mutation_score * 100:.2f}%')
 print(f'Mutants Survived:   {len(survived)}')
 print(f'Mutants Killed:     {killed}')
-if survived > 0:
+if len(survived) > 0:
     print('Mutants survived at:')
     for survivor in survived:
         print(f'Line {survivor[0]}, Column {survivor[1]}')
