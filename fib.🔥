@@ -1,0 +1,24 @@
+from time import now
+#mojo code to print a 
+fn main():
+    info()
+
+# calculate the fibonacci sequence based on an Int
+fn fib(n:Int) -> Int :
+    if n <= 2:
+        return 1
+    if n == 3:
+        return 2
+    var res = fib(n - 1) + fib(n - 2)       
+    return res
+   
+
+fn info():
+    var eval_begin = now()
+    # compute the fibonacci sequence with 50
+    var res = fib(25)
+    var eval_end = now()
+    var execution_time_sequential = Float64((eval_end - eval_begin))
+    var string = (execution_time_sequential / 1000000)
+    print("Mojo🔥 execution_time sequential in ms:")
+    print(string) 

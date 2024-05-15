@@ -1,0 +1,44 @@
+fn main() raises :
+# error: 'StringLiteral' does not implement the '__sub__' method
+    print("1" + "hello, world 🔥")
+    print(greet1("cierra"))
+    print( greet())
+    print( do_math(7))
+    print( do_math(-7))
+    print(add_one(7))
+    print(add_one(-7))
+    _ = add_one(7)
+    
+   
+
+# The fn declaration enforces type-checking and memory-safe behaviors (Rust style), while def allows no type declarations and dynamic behaviors (Python style).
+
+
+fn greet()-> String:
+    var name = "Luffy"
+    # error: 'StringLiteral' does not implement the '__sub__' method
+    return "hello " + name
+
+
+fn greet1(name: String) -> String:
+    # error: 'StringLiteral' does not implement the '__sub__' method
+    return "hello " + name  
+    
+
+
+# You can declare variables with var to create a mutable value, or with let to create an immutable value.
+# var mutable
+# let immutable 
+
+
+fn do_math(x:Int ) -> Int:
+   
+    var y = x + x # y is mutable
+    y = y * y
+    var z = y + x # z is immutable
+    return z
+
+def add_one(x) :
+    var y: Int = 1
+    var z = x + y
+    return z

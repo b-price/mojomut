@@ -1,0 +1,29 @@
+from testing import assert_true
+from hello1 import greet, greet1, add_one, do_math
+
+fn main() raises: 
+    test_greet()
+    test_greet1()
+    test_do_math()
+
+fn test_greet() raises:
+    var test1 = greet()
+    assert_true(test1, "hello Luffy")
+
+fn test_greet1() raises:
+    var test1 = greet1("Zoro")
+    assert_true(test1, "hello Zoro")
+
+fn test_do_math() raises:
+    var test1 = do_math(7)
+    assert_true(test1, 203)
+
+    var test2 = do_math(-7)
+    assert_true(test2,189)
+
+fn test_add_one() raises:
+    var test1 = add_one(7)
+    assert_true(test1, 8)
+    var test2 = add_one(-7)
+    assert_true(test1, -6)
+

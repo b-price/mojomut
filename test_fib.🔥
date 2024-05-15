@@ -1,0 +1,31 @@
+from testing import assert_true
+from fib import fib 
+
+fn main() raises:
+    test_fib()
+
+fn test_fib() raises:
+   # assert_almost_equal[type: DType, size: Int]
+   #(lhs: SIMD[type, size], rhs: SIMD[type, size], /, *, msg: String = "", atol: SIMD[type, 1] = #kgen.float_literal<1|100000000>, rtol: SIMD[type, 1] = #kgen.float_literal<1|100000>, equal_nan: Bool = false)
+    print("# Testing Fibonacci function")
+    var result1 = fib(1)
+    assert_true(result1 == 1, "Test failed for fib(1)")
+
+    var result2 = fib(2)
+    assert_true(result2 == 1, "Test failed for fib(2)")
+
+    var result3 = fib(3)
+    assert_true(result3 == 2, "Test failed for fib(3)")
+
+    var result4 = fib(4)
+    assert_true(result4 == 3, "Test failed for fib(4)")
+
+    var result5 = fib(5)
+    assert_true(result5 == 5, "Test failed for fib(5)")
+
+    var result6 = fib(10)
+    assert_true(result6 == 55, "Test failed for fib(10)")
+
+    var result7 = fib(25)
+    assert_true(result7 == 75025, "Test failed for fib(25)")
+
