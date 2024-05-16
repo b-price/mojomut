@@ -1,31 +1,61 @@
-from testing import assert_true
+from testing import assert_true, assert_false
 from fib import fib 
 
 fn main() raises:
-    test_fib()
-
-fn test_fib() raises:
-   # assert_almost_equal[type: DType, size: Int]
-   #(lhs: SIMD[type, size], rhs: SIMD[type, size], /, *, msg: String = "", atol: SIMD[type, 1] = #kgen.float_literal<1|100000000>, rtol: SIMD[type, 1] = #kgen.float_literal<1|100000>, equal_nan: Bool = false)
     print("# Testing Fibonacci function")
+    test_fib1() 
+    test_fib2() 
+    test_fib3() 
+    test_fib4() 
+    test_fib5() 
+    test_fib6() 
+    test_fib7() 
+    test_fib8() 
+    # test_fib9() 
+    # test_fib10()
+
+
+
+fn test_fib1() raises:
     var result1 = fib(1)
     assert_true(result1 == 1, "Test failed for fib(1)")
 
+fn test_fib2() raises:
     var result2 = fib(2)
     assert_true(result2 == 1, "Test failed for fib(2)")
 
+fn test_fib3() raises:
     var result3 = fib(3)
     assert_true(result3 == 2, "Test failed for fib(3)")
 
+fn test_fib4() raises:
     var result4 = fib(4)
     assert_true(result4 == 3, "Test failed for fib(4)")
 
+fn test_fib5() raises:
     var result5 = fib(5)
     assert_true(result5 == 5, "Test failed for fib(5)")
 
+fn test_fib6() raises:
     var result6 = fib(10)
     assert_true(result6 == 55, "Test failed for fib(10)")
 
+fn test_fib7() raises:
     var result7 = fib(25)
     assert_true(result7 == 75025, "Test failed for fib(25)")
 
+fn test_fib8() raises:
+    var result8 = fib(0)
+    assert_false(result8 == 0, "Test failed for fib(0)")
+
+# fn test_fib9() raises:
+#     var result9 = fib(-1)
+#     assert_true(result9 == -1, "Test failed for fib(-1)")
+
+# fn test_fib10() raises:
+#     var result10 = fib(50)
+#     assert_true(result10 == 12586269025, "Test failed for fib(50)")
+
+# assert_almost_equal[type: DType, size: Int]
+   #(lhs: SIMD[type, size], rhs: SIMD[type, size], /, *, msg: String = "", atol: SIMD[type, 1] = #kgen.float_literal<1|100000000>, rtol: SIMD[type, 1] = #kgen.float_literal<1|100000>, equal_nan: Bool = false)
+    
