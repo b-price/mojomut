@@ -5,6 +5,19 @@ import subprocess
 import argparse
 import shutil
 
+sick_logo = """   *       )          )    *                   
+ (  `   ( /(       ( /(  (  `          *   )   
+ )\))(  )\())   (  )\()) )\))(     ( ` )  /(   
+((_)()\((_)\    )\((_)\ ((_)()\    )\ ( )(_))  
+(_()((_) ((_)  ((_) ((_)(_()((_)_ ((_|_(_())   
+|  \/  |/ _ \ _ | |/ _ \|  \/  | | | |_   _|   
+| |\/| | (_) | || | (_) | |\/| | |_| | | |     
+|_|  |_|\___/ \__/ \___/|_|  |_|\___/  |_|  
+
+A mutation testing tool for the Mojo Language
+=============================================
+"""
+
 # tuples of operators
 binary_operators = ('+', '-', '*', '/', '%', '**', '//', '>>', '<<', '^', '&', '|')
 # I don't think 'is not' is correctly mutated
@@ -105,6 +118,9 @@ def integer_replacement(num):
             return num + 2
 
 
+# important first step
+print(sick_logo)
+
 # get cli arguments
 parser = argparse.ArgumentParser(description='mojomut')
 parser.add_argument('filepath', help='mojo file to mutate')
@@ -138,7 +154,7 @@ string_out = result.stdout.decode("utf-8")
 
 # generates mutants for type requested
 for mutant_type in mutant_types:
-
+    count = 0
     # the key to match mutant type in tree
     if mutant_type != 'integer':
         mutant = mutant_type + "_operator"
@@ -251,10 +267,13 @@ for mutant_type in mutant_types:
 
         # resets current mutant for the next mutant file
         mutated[pos[0]] = original[pos[0]]
-        print(f"{mutant_type} mutant {str(idx + 1)} generated")
+        count += 1
+        # print(f"{mutant_type} mutant {str(idx + 1)} generated")
+
+    print(f'{str(count)} {mutant_type} mutant(s) generated')
 
 # runs pytest on tests against mutants
-print('Pytest-Mojo running...')
+print('\nPytest-Mojo running...')
 test_result = subprocess.run(["pytest", "tests/"], stdout=subprocess.PIPE)
 string_output = test_result.stdout.decode("utf-8")
 
@@ -293,13 +312,19 @@ results = [line for line in split_output[1].splitlines()]
 survived = []
 killed = 0
 errors = False
+no_tests = False
 
 # loop to parse result lines for survivors
 for result in results:
     result_split = result.split(' ')
-    if result_split[1] == 'ERRORS' or result_split[1] == 'no':
+    # checks for pytest errors or no tests
+    if result_split[1] == 'ERRORS':
         errors = True
         break
+    elif result_split[1] == 'no':
+        no_tests = True
+        break
+    # lines with F indicate there was a test failure (the mutant was killed)
     if 'F' not in result_split[1]:
         survived.append(re.findall(r'\d+', result_split[0]))
     else:
@@ -308,7 +333,11 @@ for result in results:
 mutation_score = killed / len(results)
 
 # Mojomut output
-if not errors:
+if errors:
+    print('Pytest Error!')
+elif no_tests:
+    print('No Tests Run!')
+else:
     print(f'Mutation Score:     {mutation_score * 100:.2f}%')
     print(f'Mutants Survived:   {len(survived)}')
     print(f'Mutants Killed:     {killed}')
@@ -316,8 +345,6 @@ if not errors:
         print('Mutants survived at:')
         for survivor in survived:
             print(f'Line {survivor[0]}, Column {survivor[1]}')
-else:
-    print('Pytest Error!')
 
 # deletes all the mutants
 # ignore_errors prevents a bug where it tries to delete a mutant twice
