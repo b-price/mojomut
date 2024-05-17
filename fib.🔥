@@ -1,5 +1,5 @@
 from time import now
-#mojo code to print a 
+#mojo code to print the time in milliseconds (ms) to execute a fibonacci sequence with 25
 fn main():
     info()
 
@@ -15,7 +15,7 @@ fn fib(n:Int) -> Int :
 
 fn info():
     var eval_begin = now()
-    # compute the fibonacci sequence with 50
+    # compute the fibonacci sequence with 25 
     var res = fib(25)
     var eval_end = now()
     var execution_time_sequential = Float64((eval_end - eval_begin))
