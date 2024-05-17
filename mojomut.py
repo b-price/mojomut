@@ -20,7 +20,6 @@ A mutation testing tool for the Mojo Language
 
 # tuples of operators
 binary_operators = ('+', '-', '*', '/', '%', '**', '//', '>>', '<<', '^', '&', '|')
-# I don't think 'is not' is correctly mutated
 comparison_operators = ('<', '>', '<=', '>=', '==', '!=', 'is', 'is not')
 boolean_operators = ('and', 'or')
 unary_operators = ('+', '-')
@@ -30,7 +29,7 @@ not_operators = ('not')
 binary_mutants = {
     '+': '-',
     '-': '+',
-    '*': '/',
+    '*': '//',
     '/': '*',
     '//': '*',
     '%': '/',
@@ -81,7 +80,7 @@ def checker(arg):
 
 # function to find position of operator in a line of the generated tree
 # uses the last two numbers of the line to calculate the position
-# this only works for single-digit operands lol, handled in for loop
+# extra processing needed for >1 digit operands beyond this function
 def find_op_position(line):
     numbers = re.findall(r'\d+', line)
     op_position = [int(num) for num in numbers][-2:]
@@ -148,7 +147,8 @@ mutant_dirs = []
 
 # generates parse tree using tree sitter
 # this will fail if tree-sitter-mojo is not properly installed
-# add npm/npx/whatever package manager that works for you as the first argument if you don't want to use the binary
+# add npm/npx/whatever package manager that works for you as the
+# first argument if you don't want to use the binary
 result = subprocess.run(["tree-sitter", "parse", filepath], stdout=subprocess.PIPE)
 string_out = result.stdout.decode("utf-8")
 
